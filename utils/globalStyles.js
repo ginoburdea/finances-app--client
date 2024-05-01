@@ -1,57 +1,63 @@
 import { StyleSheet } from 'react-native'
 
-const colors = {
+export const colors = {
     primary: {
-        highlight: '',
-        borderDark: '',
-        border: '',
-        light: '',
-        background: '',
-        text: '',
+        // highlight: '#151515',
+        borderFocused: '#bdbdbd',
+        border: '#7a7a7a',
+        background: '#0a0a0a',
+        textDark: '#d1d1d1',
+        text: '#e4e4e4',
     },
     accent: {
-        regular: '',
-        dark: '',
+        regular: '#c5e32c',
+        dark: '#b8d624',
     },
-    danger: 'red',
+    danger: {
+        regular: '#bd1a1a',
+        focused: '#f11010',
+    },
 }
 
 export const globalStyles = StyleSheet.create({
     titleLarge: {
+        color: colors.primary.text,
+        fontSize: 37.9,
         fontWeight: 'bold',
-        fontSize: 29.3,
     },
     titleMedium: {
+        color: colors.primary.text,
+        fontSize: 28.43,
         fontWeight: 'bold',
-        fontSize: 23.44,
     },
     titleSmall: {
+        color: colors.primary.text,
+        fontSize: 21.33,
         fontWeight: 'bold',
-        fontSize: 18.75,
     },
 
     text: {
-        fontSize: 15,
+        color: colors.primary.text,
+        fontSize: 16,
     },
     textSmall: {
-        fontSize: 12,
+        color: colors.primary.text,
+        fontSize: 14,
     },
 
     link: {
-        color: 'blue',
+        color: colors.accent.dark,
         textDecorationLine: 'underline',
-        textDecorationColor: 'blue',
     },
     error: {
-        color: colors.danger,
+        color: colors.danger.regular,
+        fontWeight: 'bold',
     },
 
-    button: {
-        borderRadius: 4,
-        paddingHorizontal: 8,
-        paddingVertical: 24,
-        backgroundColor: 'grey',
-        color: 'white',
-        width: '20%',
+    roundedSmall: {
+        borderRadius: 8,
+    },
+    roundedMedium: {
+        borderRadius: 16,
     },
 })

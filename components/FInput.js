@@ -1,5 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import PropTypes from 'prop-types'
+import { colors, globalStyles } from '../utils/globalStyles.js'
+import { useState } from 'react'
 
 export default function FInput({
     label,
@@ -9,19 +11,36 @@ export default function FInput({
     onErrorChange = () => {},
     hideInput = false,
 }) {
+    const [isFocused, setIsFocused] = useState(false)
+
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>{label}</Text>
+            <Text style={[globalStyles.textSmall, styles.label]}>{label}</Text>
             <TextInput
                 secureTextEntry={hideInput}
-                style={[styles.input, error ? styles.inputError : {}]}
+                style={[
+                    globalStyles.roundedSmall,
+                    styles.input,
+                    isFocused ? styles.inputFocused : {},
+                    error
+                        ? isFocused
+                            ? styles.inputErrorFocused
+                            : styles.inputError
+                        : {},
+                ]}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 value={value}
                 onChangeText={newValue => {
                     onChange(newValue)
                     onErrorChange('')
                 }}
             />
-            {error && <Text style={styles.error}>{error}</Text>}
+            {error && (
+                <Text style={[globalStyles.textSmall, globalStyles.error]}>
+                    {error}
+                </Text>
+            )}
         </View>
     )
 }
@@ -41,20 +60,23 @@ const styles = StyleSheet.create({
     },
     label: {
         marginBottom: 5,
+        color: colors.primary.textDark,
     },
     input: {
-        borderRadius: 2,
-        borderColor: 'grey',
+        borderColor: colors.primary.border,
         borderWidth: 2,
         paddingVertical: 8,
         paddingHorizontal: 16,
         marginBottom: 5,
+        color: colors.primary.text,
+    },
+    inputFocused: {
+        borderColor: colors.primary.borderFocused,
     },
     inputError: {
-        borderColor: 'red',
+        borderColor: colors.danger.regular,
     },
-    error: {
-        color: 'red',
-        fontWeight: '600',
+    inputErrorFocused: {
+        borderColor: colors.danger.focused,
     },
 })

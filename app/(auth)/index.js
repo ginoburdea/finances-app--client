@@ -7,6 +7,7 @@ import { ApolloError, gql, useMutation } from '@apollo/client'
 import { apolloClient } from '../../utils/apolloClient.js'
 import { storage } from '../../utils/storage.js'
 import { UNKNOWN_ERROR } from '../../utils/errors.js'
+import FButton from '../../components/FButton.js'
 
 const LOGIN_MUTATION = gql`
     mutation($username: String!, $password: String!) {
@@ -102,11 +103,11 @@ export default function Homepage() {
                     onErrorChange={setPasswordError}
                     hideInput={true}
                 />
-                <Button
-                    style={globalStyles.button}
+                <FButton
                     onPress={() => logIn({ variables: { username, password } })}
-                    title={loading ? 'Loading...' : 'Log in'}
-                    disabled={loading}
+                    title="Log in"
+                    loading={loading}
+                    fullWidth
                 />
             </View>
 
