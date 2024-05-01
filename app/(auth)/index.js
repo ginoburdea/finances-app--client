@@ -1,13 +1,14 @@
-import { Text, View, Button, StyleSheet } from 'react-native'
-import { Link, router } from 'expo-router'
+import { Text, View } from 'react-native'
+import { Link, useRouter } from 'expo-router'
 import FInput from '../../components/FInput.js'
 import { useEffect, useState } from 'react'
 import { globalStyles } from '../../utils/globalStyles.js'
-import { ApolloError, gql, useMutation } from '@apollo/client'
 import { apolloClient } from '../../utils/apolloClient.js'
-import { storage } from '../../utils/storage.js'
-import { UNKNOWN_ERROR } from '../../utils/errors.js'
 import FButton from '../../components/FButton.js'
+import { handleAuthErrors } from '../../utils/handleAuthErrors.js'
+import { handleAuthData } from '../../utils/handleAuhData.js'
+import { gql, useMutation } from '@apollo/client'
+import { authStyles } from '../../utils/authStyles.js'
 
 const LOGIN_MUTATION = gql`
     mutation($username: String!, $password: String!) {
@@ -18,6 +19,7 @@ const LOGIN_MUTATION = gql`
             }
             user {
                 name
+                username
             }
         }
     }
@@ -37,45 +39,26 @@ export default function Homepage() {
 
     const [error, setError] = useState(null)
 
+    const router = useRouter()
+
     useEffect(() => {
-        setError(null)
-        setUsernameError(null)
-        setPasswordError(null)
-        if (!apolloError) return
-
-        if (!(apolloError instanceof ApolloError)) {
-            setError(UNKNOWN_ERROR)
-            return
-        }
-
-        const validationPath = apolloError?.graphQLErrors?.at(0)?.path?.at(0)
-        if (validationPath === 'username') {
-            setUsernameError(apolloError.graphQLErrors[0].message)
-            return
-        }
-        if (validationPath === 'password') {
-            setPasswordError(apolloError.graphQLErrors[0].message)
-            return
-        }
-        setError(UNKNOWN_ERROR)
+        handleAuthErrors(apolloError, {
+            username: setUsernameError,
+            password: setPasswordError,
+            other: setError,
+        })
     }, [apolloError])
 
-    useEffect(() => {
-        if (!data) return
-
-        storage.set('token', data.login.session.token)
-        storage.set('tokenExpiration', data.login.session.expiresAt)
-        storage.set('name', data.login.user.name)
-        storage.set('username', username)
-
-        router.replace('/dashboard')
-    }, [data])
+    useEffect(() => handleAuthData(data, router), [data])
 
     return (
         <>
-            <View style={styles.marginBottom}>
+            <View style={authStyles.marginBottom}>
                 <Text
-                    style={[globalStyles.titleLarge, styles.marginBottomSmall]}
+                    style={[
+                        globalStyles.titleLarge,
+                        authStyles.marginBottomSmall,
+                    ]}
                 >
                     Welcome back!
                 </Text>
@@ -87,7 +70,7 @@ export default function Homepage() {
                 </Text>
             </View>
 
-            <View style={styles.marginBottom}>
+            <View style={authStyles.marginBottom}>
                 <FInput
                     label="Username"
                     value={username}
@@ -112,28 +95,10 @@ export default function Homepage() {
             </View>
 
             {error && (
-                <Text
-                    style={[
-                        globalStyles.error,
-                        styles.marginBottom,
-                        styles.errorMessage,
-                    ]}
-                >
+                <Text style={[globalStyles.error, authStyles.errorMessage]}>
                     {error}
                 </Text>
             )}
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    marginBottom: {
-        marginBottom: 20,
-    },
-    marginBottomSmall: {
-        marginBottom: 5,
-    },
-    errorMessage: {
-        textAlign: 'center',
-    },
-})
