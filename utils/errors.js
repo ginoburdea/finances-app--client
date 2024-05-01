@@ -1,0 +1,1 @@
+export const UNKNOWN_ERROR = 'An unknown error appeared. Please check your data and try again'

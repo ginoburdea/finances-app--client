@@ -1,5 +1,21 @@
 import { StyleSheet } from 'react-native'
 
+const colors = {
+    primary: {
+        highlight: '',
+        borderDark: '',
+        border: '',
+        light: '',
+        background: '',
+        text: '',
+    },
+    accent: {
+        regular: '',
+        dark: '',
+    },
+    danger: 'red',
+}
+
 export const globalStyles = StyleSheet.create({
     titleLarge: {
         fontWeight: 'bold',
@@ -26,6 +42,9 @@ export const globalStyles = StyleSheet.create({
         textDecorationLine: 'underline',
         textDecorationColor: 'blue',
     },
+    error: {
+        color: colors.danger,
+    },
 
     button: {
         borderRadius: 4,
@@ -36,18 +55,3 @@ export const globalStyles = StyleSheet.create({
         width: '20%',
     },
 })
-
-const colors = {
-    primary: {
-        highlight: '',
-        borderDark: '',
-        border: '',
-        light: '',
-        background: '',
-        text: '',
-    },
-    accent: {
-        regular: '',
-        dark: '',
-    },
-}

@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import { Slot } from 'expo-router'
 
 export default function AuthLayout() {
@@ -11,7 +11,8 @@ export default function AuthLayout() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: 5,
-            }}>
+            }}
+        >
             <View>
                 <Slot />
             </View>
