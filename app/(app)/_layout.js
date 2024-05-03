@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { Redirect, Slot } from 'expo-router'
 import { colors } from '../../utils/globalStyles.js'
+import Header from '../../components/Header.js'
 import { ClickOutsideProvider } from 'react-native-click-outside'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { storage } from '../../utils/storage.js'
@@ -27,6 +28,7 @@ export default function AppLayout() {
     return (
         <ApolloProvider client={apolloClient}>
             <ClickOutsideProvider>
+                <Header />
                 <ScrollView contentContainerStyle={styles.container}>
                     <View style={styles.child}>
                         <Slot />
