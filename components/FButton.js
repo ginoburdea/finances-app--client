@@ -29,8 +29,9 @@ export default function FButton({
 FButton.propTypes = {
     title: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
-    disabled: PropTypes.boolean,
-    loading: PropTypes.boolean,
+    disabled: PropTypes.bool,
+    loading: PropTypes.bool,
+    fullWidth: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
