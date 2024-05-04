@@ -11,13 +11,22 @@ export default function FInput({
     onErrorChange = () => {},
     hideInput = false,
     disabled = false,
+    forceEnabledStyle = false,
     numeric = false,
 }) {
     const [isFocused, setIsFocused] = useState(false)
 
+    const disabledStyle = forceEnabledStyle
+        ? {}
+        : disabled
+        ? styles.disabled
+        : {}
+
     return (
         <View style={styles.container}>
-            <Text style={[globalStyles.textSmall, styles.label]}>{label}</Text>
+            <Text style={[globalStyles.textSmall, styles.label, disabledStyle]}>
+                {label}
+            </Text>
             <TextInput
                 secureTextEntry={hideInput}
                 style={[
@@ -29,6 +38,7 @@ export default function FInput({
                             ? styles.inputErrorFocused
                             : styles.inputError
                         : {},
+                    disabledStyle,
                 ]}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -57,6 +67,7 @@ FInput.propTypes = {
     onErrorChange: PropTypes.func,
     hideInput: PropTypes.bool,
     disabled: PropTypes.bool,
+    forceEnabledStyle: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
@@ -74,6 +85,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         marginBottom: 5,
         color: colors.primary.text,
+    },
+    disabled: {
+        opacity: 0.7,
     },
     inputFocused: {
         borderColor: colors.primary.borderFocused,

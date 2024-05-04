@@ -129,6 +129,7 @@ export default function AddEntry() {
                         error={categoryIdError}
                         onErrorChange={setCategoryIdError}
                         disabled
+                        forceEnabledStyle={!loading}
                     />
                 </Pressable>
 
@@ -140,6 +141,7 @@ export default function AddEntry() {
                         error={dateError}
                         onErrorChange={setDateError}
                         disabled
+                        forceEnabledStyle={!loading}
                     />
                 </Pressable>
 
@@ -150,6 +152,7 @@ export default function AddEntry() {
                     error={sumError}
                     onErrorChange={setSumError}
                     numeric
+                    disabled={loading}
                 />
 
                 <FButton

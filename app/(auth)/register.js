@@ -88,6 +88,7 @@ export default function Register() {
                     onChange={setName}
                     error={nameError}
                     onErrorChange={setNameError}
+                    disabled={loading}
                 />
                 <FInput
                     label="Username"
@@ -95,6 +96,7 @@ export default function Register() {
                     onChange={setUsername}
                     error={usernameError}
                     onErrorChange={setUsernameError}
+                    disabled={loading}
                 />
                 <FInput
                     label="Password"
@@ -103,6 +105,7 @@ export default function Register() {
                     error={passwordError}
                     onErrorChange={setPasswordError}
                     hideInput={true}
+                    disabled={loading}
                 />
                 <FButton
                     onPress={() =>

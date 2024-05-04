@@ -77,6 +77,7 @@ export default function Homepage() {
                     onChange={setUsername}
                     error={usernameError}
                     onErrorChange={setUsernameError}
+                    disabled={loading}
                 />
                 <FInput
                     label="Password"
@@ -85,6 +86,7 @@ export default function Homepage() {
                     error={passwordError}
                     onErrorChange={setPasswordError}
                     hideInput={true}
+                    disabled={loading}
                 />
                 <FButton
                     onPress={() => logIn({ variables: { username, password } })}
