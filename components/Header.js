@@ -17,7 +17,9 @@ export default function Header() {
     return (
         <>
             <View style={styles.header}>
-                <Text style={globalStyles.text}>Finances App</Text>
+                <Text style={globalStyles.text}>
+                    <Link href="/dashboard">Finances App</Link>
+                </Text>
                 <Pressable onPress={isOpen ? () => {} : () => setIsOpen(true)}>
                     <Image
                         style={styles.menuIcon}
