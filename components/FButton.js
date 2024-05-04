@@ -15,6 +15,7 @@ export default function FButton({
                 globalStyles.roundedMedium,
                 styles.button,
                 fullWidth ? { width: '100%' } : {},
+                disabled || loading ? styles.buttonDisabled : {},
             ]}
             onPress={onPress}
             disabled={disabled || loading}
@@ -41,6 +42,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.accent.regular,
         color: 'white',
         alignSelf: 'flex-start',
+    },
+    buttonDisabled: {
+        opacity: 0.7,
     },
     label: {
         textAlign: 'center',
