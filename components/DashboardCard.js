@@ -1,11 +1,11 @@
-import { gql, useQuery } from '@apollo/client'
+import { NetworkStatus, gql, useQuery } from '@apollo/client'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import PropTypes from 'prop-types'
 import { colors, globalStyles } from '../utils/globalStyles.js'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Dropdown from './Dropdown.js'
 import { UNKNOWN_ERROR_NO_INFO } from '../utils/errors.js'
-import { BarChart } from 'react-native-chart-kit'
+import { LineChart } from 'react-native-chart-kit'
 import dayjs from 'dayjs'
 
 const query = gql`
@@ -22,6 +22,18 @@ const query = gql`
 const genColorFn = color => (opacity = 1) =>
     color + (opacity == 1 ? 'ff' : opacity * 100)
 
+const customDotRenderFn = ({ x, y, index, indexData }) => (
+    <View
+        style={{
+            position: 'absolute',
+            top: y - 25,
+            left: x - 8,
+        }}
+    >
+        <Text style={[globalStyles.textSmall]}>{indexData}</Text>
+    </View>
+)
+
 export default function DashboardCard({ categoryId, categoryName }) {
     const timeFrameOptions = [
         { label: 'Last 7 days', value: 'LAST_7_DAYS' },
@@ -29,8 +41,9 @@ export default function DashboardCard({ categoryId, categoryName }) {
     ]
     const [timeFrame, setTimeFrame] = useState(timeFrameOptions[0].value)
 
-    const { loading, data, error, refetch } = useQuery(query, {
+    const { loading, data, error, networkStatus, refetch } = useQuery(query, {
         variables: { categoryId, preset: timeFrame },
+        notifyOnNetworkStatusChange: true,
     })
 
     const [chartWidth, setChartWidth] = useState(0)
@@ -39,25 +52,6 @@ export default function DashboardCard({ categoryId, categoryName }) {
     useEffect(() => {
         refetch({ categoryId, preset: timeFrame })
     }, [timeFrame])
-
-    const [chartLabels, chartDataset] = useMemo(
-        () => [
-            (data?.entryTotals || []).map(entry =>
-                dayjs(entry.date).format('MMM D')
-            ),
-            [
-                {
-                    data: (data?.entryTotals || []).map(entry => entry.sum),
-                },
-            ],
-        ],
-        [data]
-    )
-
-    const computedChartWidth = useMemo(
-        () => (timeFrame === 'LAST_7_DAYS' ? chartWidth : chartWidth * 3.5),
-        [timeFrame]
-    )
 
     return (
         <View style={styles.marginBottom}>
@@ -76,11 +70,12 @@ export default function DashboardCard({ categoryId, categoryName }) {
                     setChartWidth(nativeEvent.layout.width)
                 }}
             >
-                {loading && (
+                {(loading || networkStatus === NetworkStatus.refetch) && (
                     <View style={styles.center}>
                         <Text style={styles.textDark}>Loading...</Text>
                     </View>
                 )}
+
                 {error && (
                     <View style={styles.center}>
                         <Text style={styles.textDark}>
@@ -88,16 +83,29 @@ export default function DashboardCard({ categoryId, categoryName }) {
                         </Text>
                     </View>
                 )}
-                {data?.entryTotals && (
+
+                {data && (
                     <ScrollView horizontal={true}>
-                        <BarChart
+                        <LineChart
                             data={{
-                                labels: chartLabels,
-                                datasets: chartDataset,
+                                labels: data.entryTotals.map(entry =>
+                                    dayjs(entry.date).format('MMM D')
+                                ),
+                                datasets: [
+                                    {
+                                        data: data.entryTotals.map(
+                                            entry => entry.sum
+                                        ),
+                                    },
+                                ],
                             }}
                             verticalLabelRotation={-90}
                             xLabelsOffset={20}
-                            width={computedChartWidth}
+                            width={
+                                timeFrame === 'LAST_7_DAYS'
+                                    ? chartWidth
+                                    : chartWidth * 3.5
+                            }
                             height={chartHeight}
                             fromZero={true}
                             showValuesOnTopOfBars={true}
@@ -109,10 +117,16 @@ export default function DashboardCard({ categoryId, categoryName }) {
                                 color: genColorFn(colors.accent.regular),
                                 labelColor: genColorFn(colors.primary.textDark),
                             }}
+                            renderDotContent={customDotRenderFn}
                         />
                     </ScrollView>
                 )}
             </View>
+            {data && timeFrame === 'LAST_30_DAYS' && (
+                <Text style={[globalStyles.textSmall, styles.helpText]}>
+                    Tip: Scroll to the left to see all the data
+                </Text>
+            )}
         </View>
     )
 }
@@ -153,5 +167,10 @@ const styles = StyleSheet.create({
     chart: {
         borderRadius: 16,
         margin: 10,
+    },
+    helpText: {
+        color: colors.primary.textDark,
+        textAlign: 'center',
+        marginTop: 10,
     },
 })
