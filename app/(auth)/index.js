@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { globalStyles } from '../../utils/globalStyles.js'
 import { apolloClient } from '../../utils/apolloClient.js'
 import FButton from '../../components/FButton.js'
-import { handleAuthErrors } from '../../utils/handleAuthErrors.js'
+import { handleApolloErrors } from '../../utils/handleApolloErrors.js'
 import { handleAuthData } from '../../utils/handleAuhData.js'
 import { gql, useMutation } from '@apollo/client'
 import { authStyles } from '../../utils/authStyles.js'
@@ -42,7 +42,7 @@ export default function Homepage() {
     const router = useRouter()
 
     useEffect(() => {
-        handleAuthErrors(apolloError, {
+        handleApolloErrors(apolloError, {
             username: setUsernameError,
             password: setPasswordError,
             other: setError,

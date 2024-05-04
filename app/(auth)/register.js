@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native'
 import { handleAuthData } from '../../utils/handleAuhData.js'
 import { useEffect, useState } from 'react'
-import { handleAuthErrors } from '../../utils/handleAuthErrors.js'
+import { handleApolloErrors } from '../../utils/handleApolloErrors.js'
 import { gql, useMutation } from '@apollo/client'
 import { apolloClient } from '../../utils/apolloClient.js'
 import { authStyles } from '../../utils/authStyles.js'
@@ -51,7 +51,7 @@ export default function Register() {
     const router = useRouter()
 
     useEffect(() => {
-        handleAuthErrors(apolloError, {
+        handleApolloErrors(apolloError, {
             name: setNameError,
             username: setUsernameError,
             password: setPasswordError,

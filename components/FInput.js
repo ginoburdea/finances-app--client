@@ -10,6 +10,8 @@ export default function FInput({
     error = null,
     onErrorChange = () => {},
     hideInput = false,
+    disabled = false,
+    numeric = false,
 }) {
     const [isFocused, setIsFocused] = useState(false)
 
@@ -31,6 +33,8 @@ export default function FInput({
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 value={value}
+                editable={!disabled}
+                keyboardType={numeric ? 'numeric' : 'default'}
                 onChangeText={newValue => {
                     onChange(newValue)
                     onErrorChange('')
@@ -52,6 +56,7 @@ FInput.propTypes = {
     error: PropTypes.string,
     onErrorChange: PropTypes.func,
     hideInput: PropTypes.bool,
+    disabled: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({

@@ -8,7 +8,7 @@ import { UNKNOWN_ERROR } from './errors.js'
  * @param {{ [key:string]: ReactSetter, other: ReactSetter }} errorSetters
  * @returns
  */
-export const handleAuthErrors = (error, errorSetters) => {
+export const handleApolloErrors = (error, errorSetters) => {
     for (const key in errorSetters) {
         errorSetters[key](null)
     }
