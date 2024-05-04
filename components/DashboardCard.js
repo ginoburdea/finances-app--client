@@ -2,7 +2,7 @@ import { NetworkStatus, gql, useQuery } from '@apollo/client'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import PropTypes from 'prop-types'
 import { colors, globalStyles } from '../utils/globalStyles.js'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Dropdown from './Dropdown.js'
 import { UNKNOWN_ERROR_NO_INFO } from '../utils/errors.js'
 import { LineChart } from 'react-native-chart-kit'
@@ -15,6 +15,10 @@ const query = gql`
         ) {
             date
             sum
+            category {
+                _id
+                name
+            }
         }
     }
 `
@@ -53,6 +57,18 @@ export default function DashboardCard({ categoryId, categoryName }) {
         refetch({ categoryId, preset: timeFrame })
     }, [timeFrame])
 
+    const dataHasNonEmptyEntries = useMemo(() => {
+        if (!data?.entryTotals) return false
+
+        for (let i = 0; i < data.entryTotals.length; i++) {
+            if (data.entryTotals[i].sum > 0) {
+                return true
+            }
+        }
+
+        return false
+    }, [data])
+
     return (
         <View style={styles.marginBottom}>
             <View style={[styles.cardTitleContainer, styles.marginBottomSmall]}>
@@ -72,19 +88,30 @@ export default function DashboardCard({ categoryId, categoryName }) {
             >
                 {(loading || networkStatus === NetworkStatus.refetch) && (
                     <View style={styles.center}>
-                        <Text style={styles.textDark}>Loading...</Text>
+                        <Text style={[styles.textDark, styles.textCenter]}>
+                            Loading...
+                        </Text>
                     </View>
                 )}
 
                 {error && (
                     <View style={styles.center}>
-                        <Text style={styles.textDark}>
+                        <Text style={[styles.textDark, styles.textCenter]}>
                             {UNKNOWN_ERROR_NO_INFO}
                         </Text>
                     </View>
                 )}
 
-                {data && (
+                {!dataHasNonEmptyEntries && (
+                    <View style={styles.center}>
+                        <Text style={[styles.textDark, styles.textCenter]}>
+                            No entries found. Add a few then return to see the
+                            changes
+                        </Text>
+                    </View>
+                )}
+
+                {dataHasNonEmptyEntries && (
                     <ScrollView horizontal={true}>
                         <LineChart
                             data={{
@@ -122,7 +149,7 @@ export default function DashboardCard({ categoryId, categoryName }) {
                     </ScrollView>
                 )}
             </View>
-            {data && timeFrame === 'LAST_30_DAYS' && (
+            {dataHasNonEmptyEntries && timeFrame === 'LAST_30_DAYS' && (
                 <Text style={[globalStyles.textSmall, styles.helpText]}>
                     Tip: Scroll to the left to see all the data
                 </Text>
@@ -154,9 +181,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 20,
     },
     textDark: {
         color: colors.primary.textDark,
+    },
+    textCenter: {
+        textAlign: 'center',
     },
     cardTitleContainer: {
         display: 'flex',
