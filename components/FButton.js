@@ -8,6 +8,7 @@ export default function FButton({
     disabled = false,
     loading = false,
     fullWidth = false,
+    transparent = false,
 }) {
     return (
         <Pressable
@@ -16,11 +17,18 @@ export default function FButton({
                 styles.button,
                 fullWidth ? { width: '100%' } : {},
                 disabled || loading ? styles.buttonDisabled : {},
+                transparent ? {} : styles.regularButton,
             ]}
             onPress={onPress}
             disabled={disabled || loading}
         >
-            <Text style={[globalStyles.text, styles.label]}>
+            <Text
+                style={[
+                    globalStyles.text,
+                    styles.label,
+                    transparent ? globalStyles.link : {},
+                ]}
+            >
                 {loading ? 'Loading...' : title}
             </Text>
         </Pressable>
@@ -33,15 +41,17 @@ FButton.propTypes = {
     disabled: PropTypes.bool,
     loading: PropTypes.bool,
     fullWidth: PropTypes.bool,
+    transparent: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
     button: {
         paddingVertical: 12,
         paddingHorizontal: 40,
-        backgroundColor: colors.accent.regular,
-        color: 'white',
         alignSelf: 'flex-start',
+    },
+    regularButton: {
+        backgroundColor: colors.accent.regular,
     },
     buttonDisabled: {
         opacity: 0.7,

@@ -18,6 +18,10 @@ export const colors = {
         regular: '#bd1a1a',
         focused: '#f11010',
     },
+    success: {
+        regular: '#48a73b',
+        focused: '#328527',
+    },
 }
 
 export const globalStyles = StyleSheet.create({
@@ -52,6 +56,10 @@ export const globalStyles = StyleSheet.create({
     },
     error: {
         color: colors.danger.regular,
+        fontWeight: 'bold',
+    },
+    success: {
+        color: colors.success.regular,
         fontWeight: 'bold',
     },
 

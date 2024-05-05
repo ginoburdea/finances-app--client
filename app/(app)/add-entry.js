@@ -17,6 +17,7 @@ import dayjs from 'dayjs'
 import DatePicker from 'react-native-date-picker'
 import { useClickOutside } from 'react-native-click-outside'
 import Categories from '../../components/Categories.js'
+import CategoriesModal from '../../components/CatgegoriesModal.js'
 
 const ADD_ENTRY_MUTATION = gql`
     mutation($sum: Float!, $date: String!, $categoryId: ID!) {
@@ -31,7 +32,6 @@ const ADD_ENTRY_MUTATION = gql`
 export default function AddEntry() {
     const [dateOpen, setDateOpen] = useState(false)
     const [categoriesOpen, setCategoriesOpen] = useState(false)
-    const clickOutsideRef = useClickOutside(() => setCategoriesOpen(false))
 
     const [category, setCategory] = useState('')
     const [categoryId, setCategoryId] = useState('')
@@ -71,42 +71,32 @@ export default function AddEntry() {
 
     return (
         <>
-            <Modal
-                visible={categoriesOpen}
-                onRequestClose={() => setCategoriesOpen(false)}
-                transparent={true}
-            >
-                <View style={styles.categoriesContainer}>
-                    <ScrollView
-                        style={[globalStyles.roundedMedium, styles.categories]}
-                        ref={clickOutsideRef}
-                    >
-                        <Text
-                            style={[
-                                globalStyles.titleMedium,
-                                styles.categoriesTitle,
-                            ]}
-                        >
-                            Category
-                        </Text>
-
-                        <Categories
-                            onCategorySelect={(categoryId, categoryName) => {
-                                setCategoriesOpen(false)
-                                setCategoryId(categoryId)
-                                setCategory(categoryName)
-                                setCategoryIdError('')
-                            }}
-                        />
-                    </ScrollView>
-                </View>
-            </Modal>
-
             <Text style={[globalStyles.titleLarge, styles.marginBottom]}>
                 Add entry
             </Text>
 
             <View style={styles.marginBottom}>
+                <CategoriesModal
+                    open={categoriesOpen}
+                    onChangeOpen={setCategoriesOpen}
+                    onCategorySelect={(categoryId, categoryName) => {
+                        setCategoryId(categoryId)
+                        setCategory(categoryName)
+                        setCategoryIdError('')
+                    }}
+                />
+                <Pressable onPress={() => setCategoriesOpen(true)}>
+                    <FInput
+                        label="Category"
+                        value={category}
+                        onChange={() => {}}
+                        error={categoryIdError}
+                        onErrorChange={setCategoryIdError}
+                        disabled
+                        forceEnabledStyle={!loading}
+                    />
+                </Pressable>
+
                 <DatePicker
                     mode="date"
                     modal={true}
@@ -120,19 +110,6 @@ export default function AddEntry() {
                         setDateOpen(false)
                     }}
                 />
-
-                <Pressable onPress={() => setCategoriesOpen(true)}>
-                    <FInput
-                        label="Category"
-                        value={category}
-                        onChange={() => {}}
-                        error={categoryIdError}
-                        onErrorChange={setCategoryIdError}
-                        disabled
-                        forceEnabledStyle={!loading}
-                    />
-                </Pressable>
-
                 <Pressable onPress={() => setDateOpen(true)}>
                     <FInput
                         label="Date"
@@ -172,21 +149,5 @@ export default function AddEntry() {
 const styles = StyleSheet.create({
     marginBottom: {
         marginBottom: 20,
-    },
-    categoriesContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    categories: {
-        backgroundColor: colors.primary.highlight,
-        maxHeight: '70%',
-        flexGrow: 0,
-    },
-    categoriesTitle: {
-        paddingHorizontal: 20,
-        paddingTop: 20,
-        paddingBottom: 10,
     },
 })
