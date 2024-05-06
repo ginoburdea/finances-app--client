@@ -47,15 +47,23 @@ export default function App() {
 
             {incomeCategory && (
                 <DashboardCard
-                    categoryId={incomeCategory._id}
-                    categoryName={incomeCategory.name}
+                    categories={[
+                        {
+                            id: incomeCategory._id,
+                            name: incomeCategory.name,
+                        },
+                    ]}
                 />
             )}
 
             {expensesCategory && (
                 <DashboardCard
-                    categoryId={expensesCategory._id}
-                    categoryName={expensesCategory.name}
+                    categories={[
+                        {
+                            id: expensesCategory._id,
+                            name: expensesCategory.name,
+                        },
+                    ]}
                 />
             )}
         </>

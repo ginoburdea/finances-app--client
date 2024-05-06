@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from 'react-native'
 import PropTypes from 'prop-types'
 import { colors, globalStyles } from '../utils/globalStyles.js'
 import { useState } from 'react'
@@ -13,6 +20,7 @@ export default function FInput({
     disabled = false,
     forceEnabledStyle = false,
     numeric = false,
+    hasClearButton = false,
 }) {
     const [isFocused, setIsFocused] = useState(false)
 
@@ -27,29 +35,44 @@ export default function FInput({
             <Text style={[globalStyles.textSmall, styles.label, disabledStyle]}>
                 {label}
             </Text>
-            <TextInput
-                secureTextEntry={hideInput}
-                style={[
-                    globalStyles.roundedSmall,
-                    styles.input,
-                    isFocused ? styles.inputFocused : {},
-                    error
-                        ? isFocused
-                            ? styles.inputErrorFocused
-                            : styles.inputError
-                        : {},
-                    disabledStyle,
-                ]}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                value={value}
-                editable={!disabled}
-                keyboardType={numeric ? 'numeric' : 'default'}
-                onChangeText={newValue => {
-                    onChange(newValue)
-                    onErrorChange('')
-                }}
-            />
+
+            <View>
+                <TextInput
+                    secureTextEntry={hideInput}
+                    style={[
+                        globalStyles.roundedSmall,
+                        styles.input,
+                        isFocused ? styles.inputFocused : {},
+                        error
+                            ? isFocused
+                                ? styles.inputErrorFocused
+                                : styles.inputError
+                            : {},
+                        disabledStyle,
+                    ]}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    value={value}
+                    editable={!disabled}
+                    keyboardType={numeric ? 'numeric' : 'default'}
+                    onChangeText={newValue => {
+                        onChange(newValue)
+                        onErrorChange('')
+                    }}
+                />
+                {hasClearButton && value && (
+                    <Pressable
+                        style={styles.clearIconContainer}
+                        onPress={() => onChange(numeric ? 0 : '')}
+                    >
+                        <Image
+                            style={styles.clearIcon}
+                            source={require('../assets/close-menu.png')}
+                        />
+                    </Pressable>
+                )}
+            </View>
+
             {error && (
                 <Text style={[globalStyles.textSmall, globalStyles.error]}>
                     {error}
@@ -68,6 +91,7 @@ FInput.propTypes = {
     hideInput: PropTypes.bool,
     disabled: PropTypes.bool,
     forceEnabledStyle: PropTypes.bool,
+    hasClearButton: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
@@ -97,5 +121,16 @@ const styles = StyleSheet.create({
     },
     inputErrorFocused: {
         borderColor: colors.danger.focused,
+    },
+    clearIconContainer: {
+        padding: 8,
+        position: 'absolute',
+        top: 10,
+        right: 4,
+    },
+    clearIcon: {
+        opacity: 0.75,
+        height: 12,
+        width: 12,
     },
 })
