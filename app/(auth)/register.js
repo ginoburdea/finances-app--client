@@ -74,7 +74,7 @@ export default function Register() {
                 </Text>
                 <Text style={globalStyles.text}>
                     Use the form below to register or{' '}
-                    <Link href="/" style={globalStyles.link}>
+                    <Link href="/login" style={globalStyles.link}>
                         click here to log in
                     </Link>{' '}
                     if you have an account already

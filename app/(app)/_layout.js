@@ -1,29 +1,22 @@
 import { ScrollView, StyleSheet, View } from 'react-native'
-import { Redirect, Slot } from 'expo-router'
+import { Slot, router, usePathname, useRouter } from 'expo-router'
 import { colors } from '../../utils/globalStyles.js'
 import Header from '../../components/Header.js'
 import { ClickOutsideProvider } from 'react-native-click-outside'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import { storage } from '../../utils/storage.js'
-import { GRAPHQL_SERVER_URL } from '@env'
+import { ApolloProvider } from '@apollo/client'
+import { isLoggedIn } from '../../utils/isLoggedIn.js'
+import { apolloClient } from '../../utils/apolloClient.js'
+import { useEffect } from 'react'
 
 export default function AppLayout() {
-    const tokenExpiration = storage.getString('tokenExpiration')
-    const token = storage.getString('token')
+    const router = useRouter()
 
-    if (!token || !tokenExpiration || new Date(token) < new Date()) {
-        storage.delete('tokenExpiration')
-        storage.delete('token')
-        return <Redirect href={'/'} />
-    }
-
-    const apolloClient = new ApolloClient({
-        uri: GRAPHQL_SERVER_URL,
-        cache: new InMemoryCache(),
-        headers: {
-            authorization: 'Bearer ' + storage.getString('token'),
-        },
-    })
+    const path = usePathname()
+    useEffect(() => {
+        if (!isLoggedIn()) {
+            router.push('/login')
+        }
+    }, [path])
 
     return (
         <ApolloProvider client={apolloClient}>

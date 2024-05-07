@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native'
-import { Link, useRouter } from 'expo-router'
+import { Link, useRouter, useLocalSearchParams } from 'expo-router'
 import FInput from '../../components/FInput.js'
 import { useEffect, useState } from 'react'
 import { globalStyles } from '../../utils/globalStyles.js'
@@ -25,7 +25,7 @@ const LOGIN_MUTATION = gql`
     }
 `
 
-export default function Homepage() {
+export default function Login() {
     const [username, setUsername] = useState('')
     const [usernameError, setUsernameError] = useState('')
 
